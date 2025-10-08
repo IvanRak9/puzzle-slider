@@ -1,0 +1,14 @@
+/* App.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+#root {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Вирівнювання на початок, щоб вміст був зверху */
+    min-height: 100vh;
+}

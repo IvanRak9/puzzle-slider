@@ -1,0 +1,28 @@
+.tile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Забезпечить, що плитка заповнить комірку сітки */
+    height: 100%;
+    background-color: #f0ad4e;
+    border: 1px solid #d9534f;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.tile:hover:not(.blank) {
+    background-color: #ec971f;
+    transform: scale(1.05);
+}
+
+.tile.blank {
+    background-color: transparent;
+    border: none;
+    cursor: default;
+    box-shadow: none;
+}
