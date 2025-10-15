@@ -4,7 +4,6 @@ import GamePage from './pages/GamePage/GamePage';
 import ResultsPage from './pages/ResultsPage/ResultsPage';
 import './App.css';
 
-// "Сторінки" (плейсхолдер для роутингу)
 const PAGES = {
     START: 'start',
     GAME: 'game',
@@ -12,46 +11,41 @@ const PAGES = {
 };
 
 function App() {
-    // Плейсхолдер для стану поточної сторінки
     const [currentPage, setCurrentPage] = useState(PAGES.START);
+    const [gameResults, setGameResults] = useState(null); // Стан для зберігання результатів
 
-    // Функції-плейсхолдери для переходу між сторінками
     const handleStartGame = () => {
-        console.log('Початок гри...');
         setCurrentPage(PAGES.GAME);
     };
 
-    const handleGameEnd = () => {
-        console.log('Гра завершена...');
+    // Тепер ця функція приймає результати з GamePage
+    const handleGameEnd = (results) => {
+        setGameResults(results); // Зберігаємо результати
         setCurrentPage(PAGES.RESULTS);
     };
 
     const handleStartNewGame = () => {
-        console.log('Нова гра...');
+        setGameResults(null); // Скидаємо результати
         setCurrentPage(PAGES.START);
     };
 
-    // Відображення поточної сторінки
-    let content;
-    switch (currentPage) {
-        case PAGES.START:
-            content = <StartPage onStartGame={handleStartGame} />;
-            break;
-        case PAGES.GAME:
-            content = <GamePage onGameEnd={handleGameEnd} />;
-            break;
-        case PAGES.RESULTS:
-            content = <ResultsPage onStartNewGame={handleStartNewGame} />;
-            break;
-        default:
-            content = <StartPage onStartGame={handleStartGame} />;
-    }
+    const renderContent = () => {
+        switch (currentPage) {
+            case PAGES.GAME:
+                return <GamePage onGameEnd={handleGameEnd} />;
+            case PAGES.RESULTS:
+                // Передаємо збережені результати на сторінку
+                return <ResultsPage onStartNewGame={handleStartNewGame} results={gameResults} />;
+            case PAGES.START:
+            default:
+                return <StartPage onStartGame={handleStartGame} />;
+        }
+    };
 
     return (
         <div className="app">
-            {   }
             <main>
-                {content}
+                {renderContent()}
             </main>
         </div>
     );
