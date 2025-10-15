@@ -1,26 +1,28 @@
 import React from 'react';
 import Tile from '../Tile/Tile';
 
-const GameBoard = ({ tiles, onTileClick, style }) => {
-    const size = Math.sqrt(tiles.length);
-    const gridClasses = {
-        3: 'grid-cols-3',
-        4: 'grid-cols-4',
-        5: 'grid-cols-5'
+const GameBoard = ({ tiles, onTileClick, boardSize }) => {
+    const gridStyle = {
+        gridTemplateColumns: `repeat(${boardSize}, 1fr)`,
+        gridTemplateRows: `repeat(${boardSize}, 1fr)`,
     };
 
     return (
         <div
-            className={`grid ${gridClasses[size]} gap-2 w-full max-w-md mx-auto aspect-square p-2 bg-slate-400 rounded-xl shadow-inner`}
+            className="grid gap-1 sm:gap-2 p-2 bg-gray-400 rounded-lg shadow-inner aspect-square"
+            style={gridStyle}
         >
-            {tiles.map((number, index) => (
-                <Tile
-                    key={index}
-                    number={number}
-                    isBlank={number === null}
-                    onClick={() => onTileClick(index)}
-                />
-            ))}
+            {tiles.map((number, index) => {
+                const isBlank = number === null;
+                return (
+                    <Tile
+                        key={index}
+                        number={number}
+                        isBlank={isBlank}
+                        onClick={() => onTileClick(number)}
+                    />
+                );
+            })}
         </div>
     );
 };

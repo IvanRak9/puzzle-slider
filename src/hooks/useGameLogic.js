@@ -1,48 +1,48 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
-export const useGameLogic = ({ boardSize = 4 }) => {
+const useGameLogic = (boardSize) => {
     const GRID_SIZE = boardSize * boardSize;
 
-    const solvedState = useMemo(() => [...Array(GRID_SIZE - 1).keys()].map(i => i + 1).concat(null), [GRID_SIZE]);
+    // Використовуємо `null` для представлення порожньої клітинки. Це надійніше.
+    const finalState = useMemo(() =>
+            [...Array(GRID_SIZE - 1).keys()].map(i => i + 1).concat(null),
+        [GRID_SIZE]
+    );
 
-    const [tiles, setTiles] = useState(solvedState);
+    const [tiles, setTiles] = useState(finalState);
     const [moves, setMoves] = useState(0);
     const [time, setTime] = useState(0);
     const [isGameActive, setIsGameActive] = useState(false);
     const [isSolved, setIsSolved] = useState(false);
 
-    const isSolvable = useCallback((tiles) => {
+    const isSolvable = useCallback((tiles, size) => {
         let inversions = 0;
-        const filteredTiles = tiles.filter(t => t !== null);
-        for (let i = 0; i < filteredTiles.length - 1; i++) {
-            for (let j = i + 1; j < filteredTiles.length; j++) {
-                if (filteredTiles[i] > filteredTiles[j]) {
+        // Фільтруємо `null`, щоб він не враховувався в інверсіях
+        const flatBoard = tiles.filter(n => n !== null);
+        for (let i = 0; i < flatBoard.length; i++) {
+            for (let j = i + 1; j < flatBoard.length; j++) {
+                if (flatBoard[i] > flatBoard[j]) {
                     inversions++;
                 }
             }
         }
-
-        if (boardSize % 2 === 1) {
+        if (size % 2 !== 0) {
             return inversions % 2 === 0;
         } else {
-            // Рядок з 'blankRow' видалено, він не потрібен
-            const blankRowFromBottom = boardSize - (Math.floor(tiles.indexOf(null) / boardSize));
-            if (blankRowFromBottom % 2 === 0) {
-                return inversions % 2 !== 0;
-            } else {
-                return inversions % 2 === 0;
-            }
+            // Шукаємо індекс `null`
+            const blankIndex = tiles.indexOf(null);
+            const blankRowFromBottom = size - Math.floor(blankIndex / size);
+            return (inversions + blankRowFromBottom) % 2 === 0;
         }
-    }, [boardSize]);
+    }, []);
 
-    // Перемішування
     const shuffleTiles = useCallback(() => {
-        let shuffledTiles;
+        let shuffled;
         do {
-            shuffledTiles = [...solvedState].sort(() => Math.random() - 0.5);
-        } while (!isSolvable(shuffledTiles));
-        return shuffledTiles;
-    }, [solvedState, isSolvable]);
+            shuffled = [...finalState].sort(() => Math.random() - 0.5);
+        } while (!isSolvable(shuffled, boardSize));
+        return shuffled;
+    }, [boardSize, finalState, isSolvable]);
 
     const startGame = useCallback(() => {
         setTiles(shuffleTiles());
@@ -52,49 +52,58 @@ export const useGameLogic = ({ boardSize = 4 }) => {
         setIsGameActive(true);
     }, [shuffleTiles]);
 
-    const getCoords = (index) => ({
-        row: Math.floor(index / boardSize),
-        col: index % boardSize,
-    });
+    const handleTileClick = useCallback((number) => {
+        if (!isGameActive || isSolved || number === null) return;
 
-    const handleTileClick = (clickedIndex) => {
-        if (!isGameActive || isSolved) return;
-
+        const tileIndex = tiles.indexOf(number);
+        // Шукаємо індекс `null`
         const blankIndex = tiles.indexOf(null);
-        const { row: clickedRow, col: clickedCol } = getCoords(clickedIndex);
-        const { row: blankRow, col: blankCol } = getCoords(blankIndex);
 
-        if (Math.abs(clickedRow - blankRow) + Math.abs(clickedCol - blankCol) === 1) {
+        const tilePos = { row: Math.floor(tileIndex / boardSize), col: tileIndex % boardSize };
+        const blankPos = { row: Math.floor(blankIndex / boardSize), col: blankIndex % boardSize };
+
+        const isAdjacent =
+            (tilePos.row === blankPos.row && Math.abs(tilePos.col - blankPos.col) === 1) ||
+            (tilePos.col === blankPos.col && Math.abs(tilePos.row - blankPos.row) === 1);
+        if (isAdjacent) {
             const newTiles = [...tiles];
-            [newTiles[clickedIndex], newTiles[blankIndex]] = [newTiles[blankIndex], newTiles[clickedIndex]];
+            [newTiles[tileIndex], newTiles[blankIndex]] = [newTiles[blankIndex], newTiles[tileIndex]];
             setTiles(newTiles);
-            setMoves(prevMoves => prevMoves + 1);
+            setMoves(prev => prev + 1);
         }
-    };
-
-    useEffect(() => {
-        if (!isGameActive) return;
-        const isWin = tiles.every((tile, index) => tile === solvedState[index]);
-        if (isWin) {
-            setIsSolved(true);
-            setIsGameActive(false);
-        }
-    }, [tiles, isGameActive, solvedState]);
+    }, [tiles, boardSize, isGameActive, isSolved]);
 
     useEffect(() => {
         let timer;
         if (isGameActive) {
-            timer = setInterval(() => setTime(prevTime => prevTime + 1), 1000);
+            timer = setInterval(() => {
+                setTime(prev => prev + 1);
+            }, 1000);
         }
         return () => clearInterval(timer);
     }, [isGameActive]);
 
-    const formatTime = (seconds) => {
-        const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-        const secs = (seconds % 60).toString().padStart(2, '0');
-        return `${mins}:${secs}`;
+    useEffect(() => {
+        const checkWin = () => {
+            for (let i = 0; i < finalState.length; i++) {
+                if (tiles[i] !== finalState[i]) return false;
+            }
+            return true;
+        };
+        if (isGameActive && checkWin()) {
+            setIsGameActive(false);
+            setIsSolved(true);
+        }
+    }, [tiles, finalState, isGameActive]);
+
+    const formatTime = (totalSeconds) => {
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     };
 
-    return { tiles, moves, time: formatTime(time), isSolved, startGame, handleTileClick };
+    return { tiles, moves, time: formatTime(time), rawTime: time, isSolved, startGame, handleTileClick };
 };
+
+export default useGameLogic;
 

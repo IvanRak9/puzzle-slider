@@ -1,82 +1,86 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { addResult } from '../../store/slices/leaderboardSlice';
+import useGameLogic from '../../hooks/useGameLogic';
 import GameBoard from '../../components/GameBoard/GameBoard';
 import Button from '../../components/Button/Button';
 import Modal from '../../components/Modal/Modal';
-import { useGameLogic } from '../../hooks/useGameLogic';
-import { useSettings } from '../../context/SettingsContext';
 
 const GamePage = () => {
-    const { settings } = useSettings();
+    const dispatch = useDispatch();
+    const boardSize = useSelector((state) => state.settings.settings.boardSize);
+
+    // Передаємо boardSize в хук
+    const { tiles, moves, time, rawTime, isSolved, startGame, handleTileClick } = useGameLogic(boardSize);
+
+    const navigate = useNavigate();
     const { userId } = useParams();
-    const { tiles, moves, time, isSolved, startGame, handleTileClick } = useGameLogic({ boardSize: settings.boardSize });
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         startGame();
-    }, [startGame, settings.boardSize]);
+    }, [boardSize, startGame]);
 
     useEffect(() => {
         if (isSolved) {
-            setIsModalOpen(true);
+            dispatch(addResult({ moves, time, rawTime, boardSize }));
         }
-    }, [isSolved]);
+    }, [isSolved, dispatch, moves, time, rawTime, boardSize]);
 
-    const handlePlayAgain = () => {
-        setIsModalOpen(false);
+    const handleRestart = () => {
         startGame();
     };
 
-    const gameBoardStyle = {
-        '--board-size': settings.boardSize,
+    const handleNewGame = () => {
+        navigate(`/user/${userId}/settings`);
     };
 
     return (
-        <div className="w-full max-w-xl mx-auto text-center bg-white p-6 rounded-2xl shadow-lg">
-            <div className="flex justify-around items-center w-full max-w-sm mx-auto mb-6">
-                <div className="text-center p-3 bg-slate-100 rounded-lg w-32">
-                    <span className="text-sm text-slate-500">Ходи</span>
-                    <strong className="block text-2xl font-bold text-slate-800">{moves}</strong>
-                </div>
-                <div className="text-center p-3 bg-slate-100 rounded-lg w-32">
-                    <span className="text-sm text-slate-500">Час</span>
-                    <strong className="block text-2xl font-bold text-slate-800">{time}</strong>
-                </div>
-            </div>
-
-            <GameBoard
-                tiles={tiles}
-                onTileClick={handleTileClick}
-                style={gameBoardStyle}
-            />
-
-            <div className="mt-6 flex justify-center items-center gap-4">
-                <Link to={`/user/${userId}/settings`}>
-                    <Button variant="secondary">Налаштування</Button>
-                </Link>
-                <Link to="/">
-                    <Button variant="secondary">На головну</Button>
-                </Link>
-            </div>
-
-            <Modal isOpen={isModalOpen}>
-                <h2 className="text-3xl font-bold text-slate-800 mb-2">🎉 Вітаємо! 🎉</h2>
-                <p className="text-slate-600 mb-4">Ви склали головоломку!</p>
-                <div className="flex justify-around bg-slate-100 p-4 rounded-lg mb-6">
-                    <div>
-                        <span className="text-sm text-slate-500">Фінальні ходи</span>
-                        <strong className="block text-xl font-bold text-slate-800">{moves}</strong>
-                    </div>
-                    <div>
-                        <span className="text-sm text-slate-500">Затрачений час</span>
-                        <strong className="block text-xl font-bold text-slate-800">{time}</strong>
-                    </div>
-                </div>
-                <div className="flex flex-col sm:flex-row justify-center gap-4">
-                    <Button onClick={handlePlayAgain}>Грати знову</Button>
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+            <div className="w-full max-w-md mx-auto">
+                <div className="flex justify-between items-center mb-4">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">П'ятнашки</h1>
                     <Link to="/">
-                        <Button variant="secondary">Повернутись до меню</Button>
+                        <Button variant="secondary">На Головну</Button>
                     </Link>
+                </div>
+
+                <div className="flex justify-around bg-white p-3 rounded-lg shadow-md mb-4 text-center">
+                    <div>
+                        <p className="text-sm text-gray-500">Ходи</p>
+                        <p className="text-2xl font-bold text-indigo-600">{moves}</p>
+                    </div>
+                    <div>
+                        <p className="text-sm text-gray-500">Час</p>
+                        <p className="text-2xl font-bold text-indigo-600">{time}</p>
+                    </div>
+                </div>
+
+                <GameBoard tiles={tiles} onTileClick={handleTileClick} boardSize={boardSize} />
+
+                <div className="mt-4">
+                    <Button onClick={handleRestart} variant="primary" fullWidth>
+                        Перезапустити
+                    </Button>
+                </div>
+            </div>
+
+            <Modal isOpen={isSolved}>
+                <div className="text-center">
+                    <h2 className="text-3xl font-bold text-green-500 mb-2">Перемога!</h2>
+                    <p className="text-gray-600 mb-4">Ви склали головоломку. Чудова робота!</p>
+                    <div className="space-y-2 text-lg">
+                        <p><strong>Ходів:</strong> {moves}</p>
+                        <p><strong>Час:</strong> {time}</p>
+                    </div>
+                    <div className="mt-6 flex flex-col sm:flex-row gap-3">
+                        <Button onClick={handleRestart} variant="primary" fullWidth>
+                            Грати ще раз
+                        </Button>
+                        <Button onClick={handleNewGame} variant="secondary" fullWidth>
+                            Нова гра
+                        </Button>
+                    </div>
                 </div>
             </Modal>
         </div>
