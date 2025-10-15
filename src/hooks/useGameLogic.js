@@ -25,8 +25,7 @@ export const useGameLogic = ({ boardSize = 4 }) => {
         if (boardSize % 2 === 1) {
             return inversions % 2 === 0;
         } else {
-            const blankRow = Math.floor(tiles.indexOf(null) / boardSize);
-
+            // Рядок з 'blankRow' видалено, він не потрібен
             const blankRowFromBottom = boardSize - (Math.floor(tiles.indexOf(null) / boardSize));
             if (blankRowFromBottom % 2 === 0) {
                 return inversions % 2 !== 0;

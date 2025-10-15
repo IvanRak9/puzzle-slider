@@ -5,7 +5,7 @@ import './ResultsPage.css';
 const ResultsPage = ({ onStartNewGame, results }) => {
     return (
         <div className="page-container results-page">
-            <h2>🎉 Вітаємо! Ви виграли! 🎉</h2>
+            <h2>Вітаємо! Ви виграли!</h2>
             <div className="results-summary">
                 <p>Загальна кількість ходів: <strong>{results.moves}</strong></p>
                 <p>Затрачений час: <strong>{results.time}</strong></p>

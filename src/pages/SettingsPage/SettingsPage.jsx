@@ -1,12 +1,15 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useSettings } from '../../context/SettingsContext';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import Button from '../../components/Button/Button';
-import './SettingsPage.css';
 
-const SettingsPage = ({ onSettingsSave }) => {
+const SettingsPage = () => {
     const { settings, updateSettings } = useSettings();
-    const { register, handleSubmit, formState: { errors } } = useForm({
+    const navigate = useNavigate();
+    const { userId } = useParams();
+
+    const { register, handleSubmit } = useForm({
         defaultValues: {
             boardSize: settings.boardSize.toString(),
         }
@@ -14,27 +17,37 @@ const SettingsPage = ({ onSettingsSave }) => {
 
     const onSubmit = (data) => {
         updateSettings({ boardSize: parseInt(data.boardSize, 10) });
-        onSettingsSave();
+        navigate(`/user/${userId}/game`);
     };
 
     return (
-        <div className="page-container settings-page">
-            <h2>Налаштування гри</h2>
-            <form onSubmit={handleSubmit(onSubmit)} className="settings-form">
-                <div className="form-group">
-                    <label htmlFor="boardSize">Розмір поля:</label>
-                    <select id="boardSize" {...register("boardSize")}>
+        <div className="w-full max-w-md mx-auto text-center bg-white p-8 rounded-2xl shadow-lg">
+            <h2 className="text-3xl font-bold text-slate-800 mb-6">Налаштування гри</h2>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+                <div className="text-left">
+                    <label htmlFor="boardSize" className="block mb-2 font-medium text-slate-700">Розмір поля:</label>
+                    <select
+                        id="boardSize"
+                        {...register("boardSize")}
+                        className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    >
                         <option value="3">3x3 (Легко)</option>
                         <option value="4">4x4 (Нормально)</option>
                         <option value="5">5x5 (Складно)</option>
                     </select>
                 </div>
-                {errors.boardSize && <p className="error-message">Це поле є обов'язковим</p>}
 
-                <Button type="submit">Зберегти</Button>
+                <div className="flex flex-col gap-3">
+                    <Button type="submit">Зберегти і грати</Button>
+                    {   }
+                    <Link to="/" className="text-slate-500 hover:text-slate-800 transition">
+                        Повернутись до меню
+                    </Link>
+                </div>
             </form>
         </div>
     );
 };
 
 export default SettingsPage;
+
