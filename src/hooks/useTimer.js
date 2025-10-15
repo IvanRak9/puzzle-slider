@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 
-// Хук для відстеження часу гри
 const useTimer = (initialRunning = false) => {
     const [isRunning, setIsRunning] = useState(initialRunning);
-    const [time, setTime] = useState(0); // Час у секундах
+    const [time, setTime] = useState(0);
 
     useEffect(() => {
         let interval = null;
@@ -17,7 +16,6 @@ const useTimer = (initialRunning = false) => {
         return () => clearInterval(interval);
     }, [isRunning, time]);
 
-    // Функції керування
     const startTimer = useCallback(() => setIsRunning(true), []);
     const pauseTimer = useCallback(() => setIsRunning(false), []);
     const resetTimer = useCallback(() => {
@@ -25,7 +23,6 @@ const useTimer = (initialRunning = false) => {
         setTime(0);
     }, []);
 
-    // Форматування часу (наприклад, 01:23)
     const formatTime = (totalSeconds) => {
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = totalSeconds % 60;
