@@ -1,54 +1,48 @@
 import React, { useState } from 'react';
 import StartPage from './pages/StartPage/StartPage';
 import GamePage from './pages/GamePage/GamePage';
-import ResultsPage from './pages/ResultsPage/ResultsPage';
+import SettingsPage from './pages/SettingsPage/SettingsPage';
+import { SettingsProvider } from './context/SettingsContext';
 import './App.css';
 
 const PAGES = {
     START: 'start',
     GAME: 'game',
-    RESULTS: 'results',
+    SETTINGS: 'settings',
 };
 
 function App() {
     const [currentPage, setCurrentPage] = useState(PAGES.START);
-    const [gameResults, setGameResults] = useState(null); // Стан для зберігання результатів
 
-    const handleStartGame = () => {
-        setCurrentPage(PAGES.GAME);
-    };
-
-    // Тепер ця функція приймає результати з GamePage
-    const handleGameEnd = (results) => {
-        setGameResults(results); // Зберігаємо результати
-        setCurrentPage(PAGES.RESULTS);
-    };
-
-    const handleStartNewGame = () => {
-        setGameResults(null); // Скидаємо результати
-        setCurrentPage(PAGES.START);
-    };
+    const goToPage = (page) => setCurrentPage(page);
 
     const renderContent = () => {
         switch (currentPage) {
             case PAGES.GAME:
-                return <GamePage onGameEnd={handleGameEnd} />;
-            case PAGES.RESULTS:
-                // Передаємо збережені результати на сторінку
-                return <ResultsPage onStartNewGame={handleStartNewGame} results={gameResults} />;
+                return <GamePage onGoHome={() => goToPage(PAGES.START)} />;
+            case PAGES.SETTINGS:
+                return <SettingsPage onSettingsSave={() => goToPage(PAGES.START)} />;
             case PAGES.START:
             default:
-                return <StartPage onStartGame={handleStartGame} />;
+                return (
+                    <StartPage
+                        onStartGame={() => goToPage(PAGES.GAME)}
+                        onGoToSettings={() => goToPage(PAGES.SETTINGS)}
+                    />
+                );
         }
     };
 
     return (
-        <div className="app">
-            <main>
-                {renderContent()}
-            </main>
-        </div>
+        <SettingsProvider>
+            <div className="app">
+                <main>
+                    {renderContent()}
+                </main>
+            </div>
+        </SettingsProvider>
     );
 }
 
 export default App;
+
