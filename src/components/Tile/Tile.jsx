@@ -1,18 +1,25 @@
 import React from 'react';
-import './Tile.css';
 
-const Tile = ({ number, onClick }) => {
-    const isBlank = number === null;
+const Tile = ({ number, isBlank, onClick }) => {
+    const content = isBlank ? '' : <span>{number}</span>;
+
+    // Динамічні класи для плитки
+    const tileClasses = `
+        flex justify-center items-center w-full h-full rounded-lg 
+        font-bold text-xl sm:text-2xl md:text-3xl
+        select-none transition-all duration-200
+        ${isBlank
+        ? 'bg-slate-200 cursor-default shadow-inner'
+        : 'bg-amber-400 text-slate-800 cursor-pointer shadow-md hover:bg-amber-300 hover:scale-105'
+    }
+    `;
+
     return (
-        <div className="tile-wrapper">
-            <div
-                className={`tile ${isBlank ? 'blank' : ''}`}
-                onClick={!isBlank ? onClick : undefined}
-            >
-                {!isBlank && <span>{number}</span>}
-            </div>
+        <div className={tileClasses} onClick={onClick}>
+            {content}
         </div>
     );
 };
 
 export default Tile;
+
