@@ -13,7 +13,7 @@ export const useGameLogic = () => {
 
     const isSolvable = (tiles) => {
         let inversions = 0;
-        const filteredTiles = tiles.filter(t => t !== null); // Плитки без порожньої клітинки
+        const filteredTiles = tiles.filter(t => t !== null);
         for (let i = 0; i < filteredTiles.length - 1; i++) {
             for (let j = i + 1; j < filteredTiles.length; j++) {
                 if (filteredTiles[i] > filteredTiles[j]) {
@@ -21,7 +21,6 @@ export const useGameLogic = () => {
                 }
             }
         }
-
         return inversions % 2 === 0;
     };
 
@@ -29,7 +28,7 @@ export const useGameLogic = () => {
         let shuffledTiles;
         do {
             shuffledTiles = [...solvedState].sort(() => Math.random() - 0.5);
-        } while (!isSolvable(shuffledTiles)); // Перемішуємо доти, доки не отримаємо розв'язувану комбінацію
+        } while (!isSolvable(shuffledTiles));
         return shuffledTiles;
     }, [solvedState]);
 
@@ -63,17 +62,8 @@ export const useGameLogic = () => {
 
     useEffect(() => {
         if (!isGameActive) return;
-
-        const checkWin = () => {
-            for (let i = 0; i < solvedState.length; i++) {
-                if (tiles[i] !== solvedState[i]) {
-                    return false;
-                }
-            }
-            return true;
-        };
-
-        if (checkWin()) {
+        const isWin = tiles.every((tile, index) => tile === solvedState[index]);
+        if (isWin) {
             setIsSolved(true);
             setIsGameActive(false);
         }
@@ -105,3 +95,4 @@ export const useGameLogic = () => {
         handleTileClick,
     };
 };
+
