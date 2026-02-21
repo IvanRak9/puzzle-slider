@@ -1,5 +1,18 @@
 import React from 'react';
 
+/**
+ * Базовий компонент кнопки.
+ * Використовується для взаємодії користувача з інтерфейсом гри.
+ *
+ * @component
+ * @param {Object} props - Властивості компонента
+ * @param {React.ReactNode} props.children - Текст або елементи всередині кнопки
+ * @param {Function} props.onClick - Обробник події кліку
+ * @param {string} [props.type='button'] - Тип кнопки (button, submit)
+ * @param {string} [props.variant='primary'] - Варіант стилізації (primary, secondary)
+ * @param {boolean} [props.disabled=false] - Чи заблокована кнопка
+ */
+
 const Button = ({ children, onClick, type = 'button', variant = 'primary', disabled = false }) => {
     const baseStyles = "w-full text-center font-bold py-3 px-4 rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2";
 

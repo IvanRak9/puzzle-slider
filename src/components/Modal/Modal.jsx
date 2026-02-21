@@ -1,6 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+/**
+ * Компонент модального вікна (Modal).
+ * Використовує React Portal для рендерингу вікна поверх усього іншого контенту в DOM.
+ * Має вбудовану анімацію появи (fade-in-up) та затемнений фон.
+ * * **Важливо:** Для правильної роботи в `index.html` або головному файлі має бути `<div id="modal-root"></div>`.
+ *
+ * @component
+ * @example
+ * return (
+ * <Modal isOpen={true}>
+ * <h2 className="text-xl font-bold">Вітаю!</h2>
+ * <p>Ви успішно зібрали пазл!</p>
+ * </Modal>
+ * )
+ * * @param {Object} props - Властивості компонента.
+ * @param {boolean} props.isOpen - Прапорець, що визначає, чи відкрите модальне вікно (true - відкрите, false - приховане).
+ * @param {React.ReactNode} props.children - Внутрішній контент модального вікна (текст, кнопки тощо).
+ */
 const Modal = ({ isOpen, children }) => {
     if (!isOpen) return null;
 
@@ -26,4 +44,3 @@ const Modal = ({ isOpen, children }) => {
 };
 
 export default Modal;
-

@@ -1,70 +1,109 @@
-# Getting Started with Create React App
+# Puzzle Slider (Гра П'ятнашки)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Classic puzzle game "15-puzzle". The project was implemented using modern web technologies: React, Redux Toolkit and Tailwind CSS.
+## Functionality
+- Game logic: Tile moving algorithm, solvability check.
 
-## Available Scripts
+- Statistics: Tracks game time and number of moves made.
 
+- Leaderboard: Saves best scores in LocalStorage.
+
+- Settings: Ability to change the field size (3x3, 4x4, 5x5).
+
+- Responsiveness: The interface is optimized for mobile and desktop devices.
+
+- GDPR Compliance: Pop-up cookie consent window.
 In the project directory, you can run:
 
-### `npm start`
+## Technologies
+- [React](https://react.dev/) — A library for building interfaces.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- [Redux Toolkit](https://redux-toolkit.js.org/) — Application state management (settings, records).
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- [React Router](https://reactrouter.com/) — Navigation between pages.
 
-### `npm test`
+- [Tailwind CSS](https://tailwindcss.com/) — A utilitarian CSS framework for styling.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- [Storybook](https://storybook.js.org/) — An environment for developing and documenting UI components.
 
-### `npm run build`
+- [JSDoc](https://jsdoc.app/) — Generating technical code documentation.
+## Installation and Launch
+**To run the project locally, follow these steps:**
+1. Cloning the repository:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### `git clone https://github.com/IvanRak9/puzzle-slider.git`
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### `cd puzzle-slider`
+2. Installing dependencies:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    ### `npm install`
+3. Running in development mode:
 
-### `npm run eject`
+    ### `npm start`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+The application will be available at http://localhost:3000.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Configuration
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+The project uses several configuration files to manage styles, documentation, and build settings.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Tailwind CSS
+Global styles and theme extensions (colors, fonts) are configured in `tailwind.config.js`.
+You can customize the game's appearance by modifying the `theme` section:
+```javascript
+module.exports = {
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  theme: {
+    extend: {
+    },
+  },
+  plugins: [],
+}
+```
+### JSDoc
+Configuration for generating technical documentation is located in jsdoc.json. It defines source directories and output formats.
 
-## Learn More
+### LocalStorage Keys
+The application persists data using the browser's LocalStorage. The following keys are used:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+ - puzzleSettings — Stores user preferences (grid size).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+ - puzzleLeaderboard — Stores the list of best scores.
 
-### Code Splitting
+ - puzzle_slider_consent — Stores the user's GDPR cookie consent status.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+To reset the game data completely, you can clear these keys in your browser's DevTools (Application > Local Storage).
 
-### Analyzing the Bundle Size
+## Documentation
+The project implemented an expanded documentation system:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+**Storybook (UI Components)**
 
-### Making a Progressive Web App
+View and test isolated components (buttons, tiles, etc.).
+    
+### `npm run storybook`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+Open http://localhost:6006.
 
-### Advanced Configuration
+**JSDoc (Technical Documentation)**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Generate HTML documentation based on comments in the code.
+    
+### `npm run docs`
 
-### Deployment
+The documentation will be generated in the `docs/` folder. Open `docs/index.html` in your browser.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Project Structure
+     /components/ - UI components (Button, Tile, Modal, GDPR)
+     /hooks/ - Custom hooks (useGameLogic)
+     /pages/ - Pages (Start, Game, Settings, Leaderboard)
+     /store/ - Redux slices та конфігурація store
+     /stories/ - Story files for Storybook
+     /App.js - Main component with routing
+## License
+This project is distributed under the MIT license. See the [LICENSE](LICENSE) file for details.
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+The license check report for third-party libraries is located in the `license_report.txt` file.
+## Author
+**IvanRak9**
+- [GitHub](https://github.com/IvanRak9) :IvanRak9
