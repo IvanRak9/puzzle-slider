@@ -70,12 +70,12 @@ The application persists data using the browser's LocalStorage. The following ke
 
  - puzzleLeaderboard — Stores the list of best scores.
 
- - puzzle_slider_consent — Stores the user's GDPR cookie consent status.
+ - puzzle15_gdpr_consent — Stores the user's GDPR cookie consent status.
 
 To reset the game data completely, you can clear these keys in your browser's DevTools (Application > Local Storage).
 
 ## Documentation
-The project implemented an expanded documentation system:
+The project includes an extended documentation system:
 
 **Storybook (UI Components)**
 
@@ -97,13 +97,22 @@ The documentation will be generated in the `docs/` folder. Open `docs/index.html
      /components/ - UI components (Button, Tile, Modal, GDPR)
      /hooks/ - Custom hooks (useGameLogic)
      /pages/ - Pages (Start, Game, Settings, Leaderboard)
-     /store/ - Redux slices та конфігурація store
+     /store/ - Redux slices and store configuration
      /stories/ - Story files for Storybook
      /App.js - Main component with routing
 ## License
 This project is distributed under the MIT license. See the [LICENSE](LICENSE) file for details.
 
 The license check report for third-party libraries is located in the `license_report.txt` file.
+
+Additional alternative license analysis is provided in `LICENSE_ANALYSIS.md`.
+## Privacy Policy
+
+Privacy policy information is available:
+
+- in the application interface via the Privacy Policy page;
+- in the root repository file `PRIVACY_POLICY.md`.
+
 ## Author
 **IvanRak9**
 - [GitHub](https://github.com/IvanRak9) :IvanRak9

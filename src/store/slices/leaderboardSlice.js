@@ -1,11 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const hasConsent = () => {
+    return document.cookie.includes('puzzle15_gdpr_consent=true');
+};
+
 const getInitialLeaderboard = () => {
+    if (!hasConsent()) return [];
+
     try {
         const savedLeaderboard = localStorage.getItem('puzzleLeaderboard');
         return savedLeaderboard ? JSON.parse(savedLeaderboard) : [];
     } catch (error) {
-        console.error("Could not parse leaderboard from localStorage", error);
+        console.error("Could not parse leaderboard", error);
         return [];
     }
 };
@@ -27,10 +33,13 @@ const leaderboardSlice = createSlice({
                 }
                 return a.rawTime - b.rawTime;
             });
-            try {
-                localStorage.setItem('puzzleLeaderboard', JSON.stringify(state.results));
-            } catch (error) {
-                console.error("Could not save leaderboard to localStorage", error);
+
+            if (hasConsent()) {
+                try {
+                    localStorage.setItem('puzzleLeaderboard', JSON.stringify(state.results));
+                } catch (error) {
+                    console.error("Could not save leaderboard to localStorage", error);
+                }
             }
         },
     },
