@@ -1,5 +1,8 @@
 **Privacy Policy**
 
+This file is the repository version of the Privacy Policy.
+The same policy is also available inside the application via the Privacy Policy page.
+
 Date: 02/17/2026
 
 We do not collect personal data on the servers. All information (game progress, settings) is stored locally in your browser (LocalStorage).
